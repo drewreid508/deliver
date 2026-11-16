@@ -76,6 +76,21 @@ button{font:inherit}
 .card b{font-weight:600;font-size:15px;line-height:1.3;color:var(--fg)}
 .empty{color:var(--fg2);font-size:15px}
 
+/* sorted sections: "For your editor" file cards + "Ready to post" videos (only when the client has files) */
+.sec{display:flex;flex-direction:column;gap:16px}
+.shead{display:flex;flex-direction:column;gap:4px}
+.shead h2{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:clamp(22px,3.6vw,28px);line-height:1.05;letter-spacing:.01em}
+.shead p{color:var(--fg2);font-size:14.5px;max-width:60ch}
+.files{display:grid;grid-template-columns:minmax(0,640px);gap:12px}
+.file{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.file .ic{flex:0 0 auto;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);color:var(--accent)}
+.file > div{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.file b{font-weight:600;font-size:15.5px;line-height:1.3}
+.file span{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--fg3);text-transform:uppercase}
+.file .btn{flex:0 0 auto}
+.file .soon{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);border:1px dashed var(--line2);border-radius:999px;padding:8px 12px;white-space:nowrap}
+@media (max-width:520px){.file{flex-wrap:wrap}.file .btn,.file .soon{width:100%;justify-content:center;text-align:center}}
+
 /* player sheet */
 dialog{border:0;padding:0;margin:auto;background:transparent;color:var(--fg);max-width:min(1000px,100vw);width:100%;max-height:100vh}
 dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
@@ -124,7 +139,15 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
     <button class="chip" type="button" data-f="wide" aria-pressed="false">Widescreen · 16:9</button>
   </div>
 
-  <main id="lib"></main>
+  <section class="sec" id="editor" hidden>
+    <div class="shead"><h2>For your editor</h2><p>Full-quality files to send to whoever edits your videos.</p></div>
+    <div class="files" id="files"></div>
+  </section>
+
+  <section class="sec" id="posts">
+    <div class="shead" id="postshead" hidden><h2>Ready to post</h2><p>Finished videos you can post as they are. Tap one to watch or download.</p></div>
+    <main id="lib"></main>
+  </section>
 
   <footer class="foot">
     <p>Need a file re-sent or a different size? <b>Text Drew</b> anytime. Know a business that needs video? Send them my way and get <b>$50 off</b> your next one.</p>
@@ -157,7 +180,7 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
 </dialog>
 
 <script>
-var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-09", "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}]};
+var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-16", "files": [], "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}]};
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
@@ -174,6 +197,18 @@ var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "ht
   var hasTall = vids.some(function(v){ return v.h > v.w; }), hasWide = vids.some(function(v){ return v.w >= v.h; });
   if (hasTall && hasWide) $('filters').hidden = false;
 
+  var DL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>';
+  var FOLDER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+  var files = DATA.files || [];
+  if (files.length) {
+    $('editor').hidden = false; $('postshead').hidden = false;
+    $('files').innerHTML = files.map(function(f){
+      return '<div class="file"><span class="ic">' + FOLDER + '</span><div><b>' + esc(f.title) + '</b><span>' +
+        esc([f.date ? fmtDate(f.date) : '', f.note || ''].filter(Boolean).join(' · ')) + '</span></div>' +
+        (f.url ? '<a class="btn primary" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + DL + 'Download</a>'
+               : '<span class="soon">Link coming soon</span>') + '</div>';
+    }).join('');
+  }
   var filter = 'all', shown = [];
   function render(){
     var lib = $('lib'), html = '', groups = [], by = {};
@@ -213,6 +248,7 @@ var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "ht
     $('pmeta').textContent = fmtDate(v.date) + ' · ' + (v.h > v.w ? 'Phone 9:16' : 'Widescreen 16:9') + ' · ' + fmtDur(v.dur);
     var dl = v.download || DATA.drive;
     if (dl) { $('pdl').href = dl; $('pdl').hidden = false; } else { $('pdl').hidden = true; }
+    if (dl && !/^https?:/.test(dl)) $('pdl').setAttribute('download', dl.split('/').pop()); else $('pdl').removeAttribute('download');
     $('pprev').hidden = $('pnext').hidden = shown.length < 2;
     if (!dlg.open) dlg.showModal();
     if (location.hash !== '#' + v.id) history.replaceState(null, '', '#' + v.id);
