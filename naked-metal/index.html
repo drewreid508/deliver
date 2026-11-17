@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta property="og:title" content="Naked Metal Fabrication · Video Library">
 <meta property="og:description" content="Your videos from 508 Media Co.">
-<meta property="og:image" content="https://deliver.508mediaco.com/naked-metal/media/bryson-and-cade.jpg">
+<meta property="og:image" content="https://deliver.508mediaco.com/naked-metal/media/white-chevy.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -180,7 +180,7 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
 </dialog>
 
 <script>
-var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-16", "files": [], "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}]};
+var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-16", "files": [], "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}, {"id": "white-chevy", "title": "White Chevy", "date": "2026-11-16", "order": 1, "src": "media/white-chevy.mp4", "poster": "media/white-chevy.jpg", "w": 3840, "h": 2160, "dur": 30.31, "download": "https://we.tl/t-V5M74Cx9O6RPz9Q0"}]};
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
@@ -192,14 +192,15 @@ var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "ht
   $('cname').textContent = DATA.name;
   if (DATA.logo) { $('logo').src = DATA.logo; $('logo').alt = DATA.name + ' logo'; $('logo').hidden = false; }
   if (DATA.drive) { $('dlall').href = DATA.drive; $('dlall').hidden = false; }
+  var files = DATA.files || [];
   var vids = DATA.videos.slice().sort(function(a,b){ return a.date < b.date ? 1 : a.date > b.date ? -1 : a.order - b.order; });
-  $('count').textContent = vids.length + (vids.length === 1 ? ' video' : ' videos') + ' · updated ' + fmtDate(vids.length ? vids[0].date : DATA.updated);
+  if (!vids.length && files.length) $('posts').hidden = true;
+  $('count').textContent = (vids.length ? vids.length + (vids.length === 1 ? ' video' : ' videos') + ' · ' : '') + 'updated ' + fmtDate(vids.length ? vids[0].date : DATA.updated);
   var hasTall = vids.some(function(v){ return v.h > v.w; }), hasWide = vids.some(function(v){ return v.w >= v.h; });
   if (hasTall && hasWide) $('filters').hidden = false;
 
   var DL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>';
   var FOLDER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
-  var files = DATA.files || [];
   if (files.length) {
     $('editor').hidden = false; $('postshead').hidden = false;
     $('files').innerHTML = files.map(function(f){
