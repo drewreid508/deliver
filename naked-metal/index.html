@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta property="og:title" content="Naked Metal Fabrication · Video Library">
 <meta property="og:description" content="Your videos from 508 Media Co.">
-<meta property="og:image" content="https://deliver.508mediaco.com/naked-metal/media/white-chevy.jpg">
+<meta property="og:image" content="https://deliver.508mediaco.com/naked-metal/media/white-chevy-parts-pop-on.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -107,6 +107,23 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn[hidden]{display:none!important}
 
+/* pictures: one block per owner ("Hayden's pictures"), one grid per set, lightbox with download */
+.owner{display:flex;flex-direction:column;gap:26px}
+.pset{display:flex;flex-direction:column;gap:12px}
+.phead{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
+.phead > div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.phead b{font-weight:600;font-size:17px;line-height:1.25}
+.phead span{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.phead .btn{padding:8px 14px;font-size:13.5px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:8px}
+@media (max-width:520px){.pgrid{grid-template-columns:repeat(3,1fr);gap:4px}}
+.ph{all:unset;cursor:pointer;display:block;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--panel);border:1px solid var(--line)}
+@media (max-width:520px){.ph{border-radius:4px}}
+.ph img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.ph:hover img{transform:scale(1.04)}
+.ph:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#viewer .stage img{display:block;max-width:100%;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain}
+
 /* footer */
 .foot{display:grid;grid-template-columns:1fr auto;gap:18px 28px;align-items:center;border-top:1px solid var(--line);padding-top:26px}
 .foot p{color:var(--fg2);font-size:15px;max-width:52ch}
@@ -149,6 +166,10 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
     <main id="lib"></main>
   </section>
 
+  <section class="sec" id="pics" hidden>
+    <div id="plib" style="display:flex;flex-direction:column;gap:44px"></div>
+  </section>
+
   <footer class="foot">
     <p>Need a file re-sent or a different size? <b>Text Drew</b> anytime. Know a business that needs video? Send them my way and get <b>$50 off</b> your next one.</p>
     <div class="acts">
@@ -179,8 +200,26 @@ dialog::backdrop{background:rgba(4,5,7,.88);backdrop-filter:blur(4px)}
   </div>
 </dialog>
 
+<dialog id="viewer" aria-labelledby="vtitle">
+  <div class="sheet">
+    <div class="stage"><img id="vi" alt=""></div>
+    <div class="meta">
+      <div><h2 id="vtitle"></h2><p id="vmeta"></p></div>
+      <div class="acts">
+        <a class="btn primary" id="vdl">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+          Download
+        </a>
+        <button class="btn" id="vprev" type="button" aria-label="Previous photo">‹</button>
+        <button class="btn" id="vnext" type="button" aria-label="Next photo">›</button>
+        <button class="btn" id="vclose" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <script>
-var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-16", "files": [], "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}, {"id": "white-chevy", "title": "White Chevy", "date": "2026-11-16", "order": 1, "src": "media/white-chevy.mp4", "poster": "media/white-chevy.jpg", "w": 3840, "h": 2160, "dur": 30.31, "download": "https://we.tl/t-V5M74Cx9O6RPz9Q0"}]};
+var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "https://we.tl/t-fDx7s8sbn74nMPu4", "updated": "2026-11-18", "files": [], "photos": [{"id": "infiniti-g35-exterior", "title": "Infiniti G35 · Exterior", "owner": "Hayden", "date": "2026-11-15", "order": 0, "zip": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior.zip", "items": [{"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-01.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-01-t.jpg", "w": 1536, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-02.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-02-t.jpg", "w": 1536, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-03.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-03-t.jpg", "w": 1536, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-04.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-04-t.jpg", "w": 1449, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-05.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-05-t.jpg", "w": 1536, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-06.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-06-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-07.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-07-t.jpg", "w": 1439, "h": 2560}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-08.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-08-t.jpg", "w": 2560, "h": 1438}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-09.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-09-t.jpg", "w": 2560, "h": 2048}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-10.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-10-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-11.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-11-t.jpg", "w": 2001, "h": 2560}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-12.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-12-t.jpg", "w": 2394, "h": 2560}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-13.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-13-t.jpg", "w": 2560, "h": 2062}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-14.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-14-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-15.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-15-t.jpg", "w": 1566, "h": 2560}, {"src": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-16.jpg", "thumb": "media/photos/infiniti-g35-exterior/infiniti-g35-exterior-16-t.jpg", "w": 2560, "h": 2454}], "source": "/Users/drew/Desktop/HAYDEN SHOOT (Nov 15) - UPLOAD/01 G35 - Exterior"}, {"id": "infiniti-g35-interior-wheels", "title": "Infiniti G35 · Interior + Wheels", "owner": "Hayden", "date": "2026-11-15", "order": 1, "zip": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels.zip", "items": [{"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-01.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-01-t.jpg", "w": 1644, "h": 2048}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-02.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-02-t.jpg", "w": 1537, "h": 2048}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-03.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-03-t.jpg", "w": 1439, "h": 2560}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-04.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-04-t.jpg", "w": 1582, "h": 2560}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-05.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-05-t.jpg", "w": 1439, "h": 2560}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-06.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-06-t.jpg", "w": 2560, "h": 2179}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-07.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-07-t.jpg", "w": 1469, "h": 2560}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-08.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-08-t.jpg", "w": 1473, "h": 2048}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-09.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-09-t.jpg", "w": 1920, "h": 2560}, {"src": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-10.jpg", "thumb": "media/photos/infiniti-g35-interior-wheels/infiniti-g35-interior-wheels-10-t.jpg", "w": 1920, "h": 2560}], "source": "/Users/drew/Desktop/HAYDEN SHOOT (Nov 15) - UPLOAD/02 G35 - Interior + Wheels"}, {"id": "honda-accord", "title": "Honda Accord", "owner": "Will", "date": "2026-11-15", "order": 2, "zip": "media/photos/honda-accord/honda-accord.zip", "items": [{"src": "media/photos/honda-accord/honda-accord-01.jpg", "thumb": "media/photos/honda-accord/honda-accord-01-t.jpg", "w": 2476, "h": 2560}, {"src": "media/photos/honda-accord/honda-accord-02.jpg", "thumb": "media/photos/honda-accord/honda-accord-02-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/honda-accord/honda-accord-03.jpg", "thumb": "media/photos/honda-accord/honda-accord-03-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/honda-accord/honda-accord-04.jpg", "thumb": "media/photos/honda-accord/honda-accord-04-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/honda-accord/honda-accord-05.jpg", "thumb": "media/photos/honda-accord/honda-accord-05-t.jpg", "w": 2052, "h": 1153}], "source": "/Users/drew/Desktop/HAYDEN SHOOT (Nov 15) - UPLOAD/03 Honda Accord"}, {"id": "1964-impala", "title": "Bel Air", "owner": "Will", "date": "2026-11-15", "order": 3, "zip": "media/photos/1964-impala/1964-impala.zip", "items": [{"src": "media/photos/1964-impala/1964-impala-01.jpg", "thumb": "media/photos/1964-impala/1964-impala-01-t.jpg", "w": 2560, "h": 1438}, {"src": "media/photos/1964-impala/1964-impala-02.jpg", "thumb": "media/photos/1964-impala/1964-impala-02-t.jpg", "w": 2560, "h": 1440}, {"src": "media/photos/1964-impala/1964-impala-03.jpg", "thumb": "media/photos/1964-impala/1964-impala-03-t.jpg", "w": 2560, "h": 2094}, {"src": "media/photos/1964-impala/1964-impala-04.jpg", "thumb": "media/photos/1964-impala/1964-impala-04-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/1964-impala/1964-impala-05.jpg", "thumb": "media/photos/1964-impala/1964-impala-05-t.jpg", "w": 1439, "h": 2560}, {"src": "media/photos/1964-impala/1964-impala-06.jpg", "thumb": "media/photos/1964-impala/1964-impala-06-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/1964-impala/1964-impala-07.jpg", "thumb": "media/photos/1964-impala/1964-impala-07-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/1964-impala/1964-impala-08.jpg", "thumb": "media/photos/1964-impala/1964-impala-08-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/1964-impala/1964-impala-09.jpg", "thumb": "media/photos/1964-impala/1964-impala-09-t.jpg", "w": 2103, "h": 2560}, {"src": "media/photos/1964-impala/1964-impala-10.jpg", "thumb": "media/photos/1964-impala/1964-impala-10-t.jpg", "w": 2560, "h": 1439}, {"src": "media/photos/1964-impala/1964-impala-11.jpg", "thumb": "media/photos/1964-impala/1964-impala-11-t.jpg", "w": 2560, "h": 1439}], "source": "/Users/drew/Desktop/HAYDEN SHOOT (Nov 15) - UPLOAD/04 1964 Impala"}], "videos": [{"id": "bryson-and-cade", "title": "Bryson and Cade", "date": "2026-11-09", "order": 0, "src": "media/bryson-and-cade.mp4", "poster": "media/bryson-and-cade.jpg", "w": 3840, "h": 2160, "dur": 23.23}, {"id": "white-chevy", "title": "White Chevy", "date": "2026-11-16", "order": 1, "src": "media/white-chevy.mp4", "poster": "media/white-chevy.jpg", "w": 3840, "h": 2160, "dur": 30.31, "download": "https://we.tl/t-V5M74Cx9O6RPz9Q0"}, {"id": "white-chevy-parts-pop-on", "title": "White Chevy · Parts Pop On", "date": "2026-11-18", "order": 2, "src": "media/white-chevy-parts-pop-on.mp4", "poster": "media/white-chevy-parts-pop-on.jpg", "w": 1920, "h": 1080, "dur": 28.12, "download": "https://we.tl/t-Mh8rp9b4AwoSFoRC"}, {"id": "bel-air", "title": "Bel Air", "date": "2026-11-18", "order": 3, "src": "media/bel-air.mp4", "poster": "media/bel-air.jpg", "w": 1920, "h": 1080, "dur": 19.33, "download": "https://we.tl/t-Mh8rp9b4AwoSFoRC"}]};
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var PLAY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
@@ -266,6 +305,50 @@ var DATA = {"name": "Naked Metal Fabrication", "logo": "logo.webp", "drive": "ht
     if (!dlg.open) return;
     if (e.key === 'ArrowRight') open(cur + 1); else if (e.key === 'ArrowLeft') open(cur - 1);
   });
+  // ---- pictures ----
+  var sets = (DATA.photos || []).slice().sort(function(a,b){ return a.order - b.order; });
+  var flat = [];
+  if (sets.length) {
+    $('pics').hidden = false; $('postshead').hidden = false;
+    var owners = [], byO = {};
+    sets.forEach(function(st){ var o = st.owner || ''; if (!byO[o]) { byO[o] = []; owners.push(o); } byO[o].push(st); });
+    $('plib').innerHTML = owners.map(function(o){
+      var n = byO[o].reduce(function(t, st){ return t + st.items.length; }, 0);
+      return '<div class="owner"><div class="shead"><h2>' + esc(o ? o + "'s pictures" : 'Pictures') + '</h2><p>' + n +
+        ' edited photos. Tap one to see it full size, or download a whole set.</p></div>' +
+        byO[o].map(function(st){
+          return '<div class="pset"><div class="phead"><div><b>' + esc(st.title) + '</b><span>' + st.items.length + ' photos · ' + fmtDate(st.date) + '</span></div>' +
+            (st.zip ? '<a class="btn" href="' + esc(st.zip) + '" download>' + DL + 'Download all</a>' : '') + '</div><div class="pgrid">' +
+            st.items.map(function(it, k){
+              var i = flat.push({it: it, st: st, k: k}) - 1;
+              return '<button class="ph" type="button" data-p="' + i + '" aria-label="View ' + esc(st.title) + ' photo ' + (k + 1) + '"><img src="' + it.thumb + '" alt="" loading="lazy"></button>';
+            }).join('') + '</div></div>';
+        }).join('') + '</div>';
+    }).join('');
+  }
+  var nPics = flat.length;
+  if (nPics) $('count').textContent = (vids.length ? vids.length + (vids.length === 1 ? ' video · ' : ' videos · ') : '') + nPics + ' photos · updated ' +
+    fmtDate([vids.length ? vids[0].date : '', sets.map(function(s){ return s.date; }).sort().pop()].sort().pop());
+  var vw = $('viewer'), vcur = -1;
+  function vopen(i){
+    vcur = (i + flat.length) % flat.length; var f = flat[vcur];
+    $('vi').src = f.it.src; $('vi').alt = f.st.title + ' photo ' + (f.k + 1);
+    $('vtitle').textContent = f.st.title; $('vmeta').textContent = (f.k + 1) + ' of ' + f.st.items.length;
+    $('vdl').href = f.it.src; $('vdl').setAttribute('download', f.it.src.split('/').pop());
+    if (!vw.open) vw.showModal();
+  }
+  function vclose(){ if (vw.open) vw.close(); $('vi').removeAttribute('src'); }
+  $('plib').addEventListener('click', function(e){ var b = e.target.closest('.ph'); if (b) vopen(+b.dataset.p); });
+  $('vclose').addEventListener('click', vclose);
+  $('vprev').addEventListener('click', function(){ vopen(vcur - 1); });
+  $('vnext').addEventListener('click', function(){ vopen(vcur + 1); });
+  vw.addEventListener('cancel', function(e){ e.preventDefault(); vclose(); });
+  vw.addEventListener('click', function(e){ if (e.target === vw) vclose(); });
+  document.addEventListener('keydown', function(e){
+    if (!vw.open) return;
+    if (e.key === 'ArrowRight') vopen(vcur + 1); else if (e.key === 'ArrowLeft') vopen(vcur - 1);
+  });
+
   var h = location.hash.slice(1);
   if (h) { var i = shown.findIndex(function(v){ return v.id === h; }); if (i >= 0) open(i); }
 })();
